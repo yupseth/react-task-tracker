@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
+import Footer from "./components/Footer";
 
 function App() {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -83,7 +84,7 @@ function App() {
   };
 
   return (
-    <header className="container">
+    <div className="container">
       <Header
         onAdd={() => setShowAddTask(!showAddTask)}
         showAdd={showAddTask}
@@ -94,7 +95,8 @@ function App() {
       ) : (
         "No tasks"
       )}
-    </header>
+      <Footer />
+    </div>
   );
 }
 
