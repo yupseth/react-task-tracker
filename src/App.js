@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import About from "./components/About";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
-import Footer from "./components/Footer";
-import About from "./components/About";
 
 function App() {
   const [showAddTask, setShowAddTask] = useState(false);
@@ -15,23 +15,44 @@ function App() {
       const tasksFromServer = await fetchTasks();
       setTasks(tasksFromServer);
     };
+
     getTasks();
   }, []);
 
   //fetch tasks
   const fetchTasks = async () => {
     const res = await fetch("http://localhost:3333/tasks");
-    const data = await res.json();
 
+    const data = await res.json();
     return data;
   };
 
   //fetch task
   const fetchTask = async (id) => {
     const res = await fetch(`http://localhost:3333/tasks/${id}`);
+
+    const data = await res.json();
+    return data;
+  };
+
+  //add task
+  const addTask = async (task) => {
+    const res = await fetch("http://localhost:3333/tasks", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(task),
+    });
+
     const data = await res.json();
 
-    return data;
+    setTasks([...tasks, data]);
+
+    // const id = Math.floor(Math.random() * 10000) + 1;
+
+    // const newTask = { id, ...task };
+    // setTasks([...tasks, newTask]);
   };
 
   //delete task
@@ -46,6 +67,7 @@ function App() {
   //toggle reminder
   const toggleReminder = async (id) => {
     const taskToToggle = await fetchTask(id);
+
     const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
 
     const res = await fetch(`http://localhost:3333/tasks/${id}`, {
@@ -65,26 +87,6 @@ function App() {
     );
   };
 
-  //add task
-  const addTask = async (task) => {
-    const res = await fetch("http://localhost:3333/tasks", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(task),
-    });
-
-    const data = await res.json();
-    setTasks([...tasks, data]);
-
-    ////THIS WAS USEFULL WHEN THERE WAS NO DB TO GENERATE IDs
-    // const id = Math.floor(Math.random() * 10000) + 1;
-
-    // const newTask = { id, ...task };
-    // setTasks([...tasks, newTask]);
-  };
-
   return (
     <Router>
       <div className="container">
@@ -92,7 +94,6 @@ function App() {
           onAdd={() => setShowAddTask(!showAddTask)}
           showAdd={showAddTask}
         />
-
         <Routes>
           <Route
             path="/"
@@ -103,11 +104,11 @@ function App() {
                 {tasks.length > 0 ? (
                   <Tasks
                     tasks={tasks}
-                    onToggle={toggleReminder}
                     onDelete={deleteTask}
+                    onToggle={toggleReminder}
                   />
                 ) : (
-                  "No tasks"
+                  "No task to show"
                 )}
               </>
             }

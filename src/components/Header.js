@@ -1,5 +1,6 @@
-import Button from "./Button";
+import PropTypes from "prop-types";
 import { useLocation } from "react-router-dom";
+import Button from "./Button";
 
 const Header = ({ title, onAdd, showAdd }) => {
   const location = useLocation();
@@ -10,7 +11,7 @@ const Header = ({ title, onAdd, showAdd }) => {
       {location.pathname === "/" && (
         <Button
           color={showAdd ? "red" : "green"}
-          text={showAdd ? "Closed" : "Add"}
+          text={showAdd ? "Close" : "Add"}
           onClick={onAdd}
         />
       )}
@@ -20,6 +21,10 @@ const Header = ({ title, onAdd, showAdd }) => {
 
 Header.defaultProps = {
   title: "Task Tracker",
+};
+
+Header.propTypes = {
+  title: PropTypes.string.isRequired,
 };
 
 export default Header;
