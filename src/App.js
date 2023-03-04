@@ -23,6 +23,14 @@ function App() {
     return data;
   };
 
+  //fetch task
+  const fetchTask = async (id) => {
+    const res = await fetch(`http://localhost:3333/tasks/${id}`);
+    const data = await res.json();
+
+    return data;
+  };
+
   //delete task
   const deleteTask = async (id) => {
     await fetch(`http://localhost:3333/tasks/${id}`, {
@@ -33,10 +41,23 @@ function App() {
   };
 
   //toggle reminder
-  const toggleReminder = (id) => {
+  const toggleReminder = async (id) => {
+    const taskToToggle = await fetchTask(id);
+    const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
+
+    const res = await fetch(`http://localhost:3333/tasks/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(updTask),
+    });
+
+    const data = await res.json();
+
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
+        task.id === id ? { ...task, reminder: data.reminder } : task
       )
     );
   };
@@ -54,6 +75,7 @@ function App() {
     const data = await res.json();
     setTasks([...tasks, data]);
 
+    ////THIS WAS USEFULL WHEN THERE WAS NO DB TO GENERATE IDs
     // const id = Math.floor(Math.random() * 10000) + 1;
 
     // const newTask = { id, ...task };
