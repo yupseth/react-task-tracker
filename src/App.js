@@ -50,7 +50,10 @@ function App() {
 
   return (
     <header className="container">
-      <Header onAdd={() => setShowAddTask(!showAddTask)} />
+      <Header
+        onAdd={() => setShowAddTask(!showAddTask)}
+        showAdd={showAddTask}
+      />
       {showAddTask && <AddTask onAdd={addTask} />}
       {tasks.length > 0 ? (
         <Tasks tasks={tasks} onToggle={toggleReminder} onDelete={deleteTask} />
